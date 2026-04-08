@@ -8,10 +8,10 @@ def TestearColeccion():
     except Exception as e:
         print(f"Error: {e}")
 
-def IniciarTienda():
+def IniciarTienda(nombre):
     try:
         cliente = MongoClient("mongodb://localhost:27017/")
-        db = cliente["TiendaRopaDB"]
+        db = cliente[nombre]
         coleccion = db["productos"]
 
         print("Se creó la base de datos TiendaRopaDB con su colección productos.")
@@ -167,7 +167,7 @@ def añadirColor(tienda, producto, color):
 if __name__ == "__main__":
     TestearColeccion()
 
-    MiTienda = IniciarTienda()
+    MiTienda = IniciarTienda("MiTienda")
 
     if MiTienda is not None:
         AgregarProductos(MiTienda)
