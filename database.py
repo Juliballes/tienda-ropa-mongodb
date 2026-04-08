@@ -116,6 +116,53 @@ def EsParaRegalo(tienda):
     for p in tienda.find({"precio": {"$lt": 30000}}):
         print(f"{p['articulo']} — ${p['precio']}")
 
+def ConsultasEspecificas(tienda):
+    EsParaRegalo(tienda)
+    NoHayStock(tienda)
+    SiSeVendenTodosLosBuzos(tienda)
+    ConStockNoDisponible(tienda)
+    ExisteEnNegro(tienda)
+    PrecioPromedioPantalones(tienda)
+    ProductosTalleM(tienda)
+
+#actualizaciones
+
+def actualizarPrecios(tienda, porcentaje):
+    nuevoPrecio = 1 + (porcentaje / 100)
+    tienda.update_many({}, {"$mul": {"precio": nuevoPrecio}})
+    print("Precios actualizados.")
+
+def sumarStock(tienda, nombre_producto, cantidad):
+    tienda.update_one({"articulo": nombre_producto}, {"$inc": {"stock": cantidad}})
+    print(f"El stock de {nombre_producto} se incrementó en {cantidad} unidades.")
+
+def iniciarBlackFriday(tienda):
+    filtro = {"precio": {"$gt": 40000}}
+    tienda.update_many(filtro, {"$mul": {"precio": 0.9}})
+    print("Se hicieron los descuentos por Black Friday.")
+
+def cambiarNombre(tienda, nombreViejo, nombreNuevo):
+    tienda.update_one({"articulo": nombreViejo}, {"$set": {"articulo": nombreNuevo}})
+    print(f"Nombre actualizado de {nombreViejo} a {nombreNuevo}.")
+
+def renombrarCategoria(tienda, nombreViejo, nombreNuevo):
+    tienda.update_many({"categoria": nombreViejo}, {"$set": {"categoria": nombreNuevo}})
+    print(f"Categorías actualizada, nuevo nombre: {nombreNuevo}.")
+
+
+def sobrestock(tienda):
+    articuloConMasStock = tienda.find_one(sort=[("stock", -1)])
+
+    if articuloConMasStock:
+        idArticuloConMasStock = articuloConMasStock["_id"]
+        nombre = articuloConMasStock["articulo"]
+        tienda.update_one({"_id": idArticuloConMasStock}, {"$mul": {"precio": 0.8}})
+        print(f"Por sobrestock se puso en descuento el artículo {nombre}")
+
+def añadirColor(tienda, producto, color):
+    tienda.update_one({"articulo": producto}, {"$addToSet": {"colores": color}})
+    print("Color añadido a la lista.")
+
 #main
 if __name__ == "__main__":
     TestearColeccion()
@@ -124,13 +171,16 @@ if __name__ == "__main__":
 
     if MiTienda is not None:
         AgregarProductos(MiTienda)
+
         ConsultarProductos(MiTienda)
 
-        EsParaRegalo(MiTienda)
-        NoHayStock(MiTienda)
-        SiSeVendenTodosLosBuzos(MiTienda)
-        ConStockNoDisponible(MiTienda)
-        ExisteEnNegro(MiTienda)
-        PrecioPromedioPantalones(MiTienda)
-        ProductosTalleM(MiTienda)
+        ConsultasEspecificas(MiTienda)
 
+        actualizarPrecios(MiTienda, 25)
+        sumarStock(MiTienda, "Jean Clasico", 5)
+        iniciarBlackFriday(MiTienda)
+        cambiarNombre(MiTienda, "Remera Basica", "Remera Clásica")
+        renombrarCategoria(MiTienda, "Deportivo", "Deportes")
+        sobrestock(MiTienda)
+        añadirColor(MiTienda, "Cardigan Tejido", "Negro")
+        añadirColor(MiTienda, "Cardigan Tejido", "Beige")
