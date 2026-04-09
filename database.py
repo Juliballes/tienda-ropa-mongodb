@@ -72,9 +72,11 @@ def ConsultarProductos(coleccion):
 
 def ProductosTalleM(tienda):
     print("Productos disponibles en talle M:", end=" ")
-    for p in tienda.find({"talles": "M"}):
+    resultado = list(tienda.find({"talles": "M"}))
+    for p in resultado:
         print(f"{p['articulo']}", end=", ")
     print()
+    return resultado
 
 def PrecioPromedioPantalones(tienda):
     promedioagrupado = [
@@ -86,15 +88,19 @@ def PrecioPromedioPantalones(tienda):
 
 def ExisteEnNegro(tienda):
     print("Productos existentes en color negro:", end=" ")
-    for p in tienda.find({"colores": "Negro"}):
+    resultado = list(tienda.find({"colores": "Negro"}))
+    for p in resultado:
         print(f"{p['articulo']}", end=", ")
     print()
+    return resultado
 
 def ConStockNoDisponible(tienda):
     print("Productos con stock que no están disponibles:", end="")
-    for p in tienda.find({"stock": {"$gt": 0}, "disponible": False}):
+    resultado = list(tienda.find({"stock": {"$gt": 0}, "disponible": False}))
+    for p in resultado:
         print(f"{p['articulo']}", end=", ")
     print()
+    return resultado
 
 def SiSeVendenTodosLosBuzos(tienda):
     sumaagregada = [
@@ -107,14 +113,18 @@ def SiSeVendenTodosLosBuzos(tienda):
 
 def NoHayStock(tienda):
         print("\nProductos sin stock:", end=" ")
-        for p in tienda.find({"stock": 0}):
+        resultado = list(tienda.find({"stock": 0}))
+        for p in resultado:
             print(f"{p['articulo']}", end=", ")
         print()
+        return resultado
 
 def EsParaRegalo(tienda):
     print("Propuestas para regalo (Precio menor a 30mil):")
-    for p in tienda.find({"precio": {"$lt": 30000}}):
+    resultado = list(tienda.find({"precio": {"$lt": 30000}}))
+    for p in resultado:
         print(f"{p['articulo']} — ${p['precio']}")
+    return resultado
 
 def ConsultasEspecificas(tienda):
     EsParaRegalo(tienda)
