@@ -70,11 +70,18 @@ def ConsultarProductos(coleccion):
     except Exception as e:
         print(f"Error al consultar: {e}")
 
-def ProductosTalleM(tienda):
-    print("Productos disponibles en talle M:", end=" ")
-    resultado = list(tienda.find({"talles": "M"}))
+def RemerasDisponiblesEnTalleM(tienda):
+    print("Remeras disponibles en talle M:", end=" ")
+
+    resultado = list(tienda.find({
+        "categoria": "Remeras",
+        "talles": "M",
+        "disponible": True
+    }))
+
     for p in resultado:
         print(f"{p['articulo']}", end=", ")
+
     print()
     return resultado
 
@@ -95,11 +102,16 @@ def ExisteEnNegro(tienda):
     return resultado
 
 def ConStockNoDisponible(tienda):
+
     print("Productos con stock que no están disponibles:", end="")
+
     resultado = list(tienda.find({"stock": {"$gt": 0}, "disponible": False}))
+
     for p in resultado:
         print(f"{p['articulo']}", end=", ")
+
     print()
+
     return resultado
 
 def SiSeVendenTodosLosBuzos(tienda):
@@ -133,7 +145,6 @@ def ConsultasEspecificas(tienda):
     ConStockNoDisponible(tienda)
     ExisteEnNegro(tienda)
     PrecioPromedioPantalones(tienda)
-    ProductosTalleM(tienda)
 
 #actualizaciones
 
